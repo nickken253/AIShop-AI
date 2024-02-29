@@ -50,37 +50,20 @@ def get_recommendations(df, similarity, n=5):
     cloth_indices = [i[0] for i in sim_scores]
     return df['id'].iloc[cloth_indices]
 
-# def print_recommendations(img_url):
-#     img_path = download_image(img_url)
-#     similarity = get_similarity(img_path)
-#     norm_similarity = normalize_sim(similarity)
-#     df = pd.read_csv('src/styles.csv', low_memory=False)
-#     df['image'] = df['id'].astype(str) + '.jpg'
-#     recommendation = get_recommendations(df, norm_similarity)
-#     return recommendation.tolist()
-
 def print_recommendations(img_url):
-    try:
-        img_path = download_image(img_url)
-        similarity = get_similarity(img_path)
-        norm_similarity = normalize_sim(similarity)
-        df = pd.read_csv('src/styles.csv', low_memory=False)
-        df['image'] = df['id'].astype(str) + '.jpg'
-        recommendation = get_recommendations(df, norm_similarity)
-        recommended_products = df[df['id'].isin(recommendation)]
-        recommended_links = recommended_products['link'].tolist()
-        return recommended_links
-    except Exception as e:
-        return str(e)
+    img_path = download_image(img_url)
+    similarity = get_similarity(img_path)
+    norm_similarity = normalize_sim(similarity)
+    df = pd.read_csv('src/styles.csv', low_memory=False)
+    df['image'] = df['id'].astype(str) + '.jpg'
+    recommendation = get_recommendations(df, norm_similarity)
+    return recommendation.tolist()
 
 @app.route('/recommendations', methods=['POST'])
 def recommend():
-    try:
-        img_url = request.json['img_url']
-        links = print_recommendations(img_url)
-        return jsonify(links=links)
-    except Exception as e:
-        return jsonify({"error": str(e)})
+    img_url = request.json['img_url']
+    recommendation = print_recommendations(img_url)
+    return jsonify(recommendation)
 
 if __name__ == '__main__':
     app.run(debug=True, host='10.1.0.4', port=3033)
