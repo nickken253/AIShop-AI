@@ -8,10 +8,11 @@ from keras.applications.vgg16 import preprocess_input
 from sklearn.metrics.pairwise import linear_kernel
 import warnings
 import tempfile
+from flask_cors import CORS
 warnings.filterwarnings("ignore")
 
 app = Flask(__name__)
-
+CORS(app)
 model = tf.keras.models.load_model('src/AIShop_model.h5')
 
 df_embeddings = pd.read_csv('src/df_embeddings.csv')
